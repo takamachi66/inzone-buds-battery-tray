@@ -51,8 +51,12 @@ impl BatteryStatus {
             .min()
     }
 
+    pub fn has_displayable_values(&self) -> bool {
+        self.connected && self.known
+    }
+
     pub fn summary_lines(&self) -> [String; 4] {
-        if self.connected {
+        if self.has_displayable_values() {
             [
                 "Status: Connected".to_string(),
                 format!("Left: {}", format_percent(self.left)),

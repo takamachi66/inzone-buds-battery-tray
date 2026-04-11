@@ -60,9 +60,9 @@ Windows の仕様上、アプリ側からトレイアイコンを「隠れてい
 - 左だけ出す: `Left: <percent>`, `Right: ?`, `Case: <percent>`
 - 右だけ出す: `Left: ?`, `Right: <percent>`, `Case: <percent>`
 - 両方出す: `Left: <percent>`, `Right: <percent>`, `Case: <percent>`
-- 両方ケース内: ドングルが active query に応答しない場合があるため、`Left: ?`, `Right: ?`, `Case: ?` 相当の表示になることがあります。
+- 両方ケース内: ドングルが active query に応答しない場合があるため、`Disconnected` と表示されることがあります。
 
-両方のイヤホンをケースに入れた状態では、INZONE Hub 互換の battery query が応答しないことがあります。この場合、古い feature report や無関係な値からケース残量を推測すると誤った値を表示する可能性があるため、このアプリは推測値ではなく `?` を表示します。
+両方のイヤホンをケースに入れた状態では、INZONE Hub 互換の battery query が応答しないことがあります。この場合、古い feature report や無関係な値からケース残量を推測すると誤った値を表示する可能性があるため、このアプリは推測値ではなく `Disconnected` を表示します。
 
 ### 設定
 
@@ -167,9 +167,9 @@ Confirmed behavior:
 - Left earbud only: `Left: <percent>`, `Right: ?`, `Case: <percent>`
 - Right earbud only: `Left: ?`, `Right: <percent>`, `Case: <percent>`
 - Both earbuds out: `Left: <percent>`, `Right: <percent>`, `Case: <percent>`
-- Both earbuds in case: the dongle may stop responding to the active battery query, so the app may show values equivalent to `Left: ?`, `Right: ?`, `Case: ?`.
+- Both earbuds in case: the dongle may stop responding to the active battery query, so the app may show `Disconnected`.
 
-When both earbuds are in the case, the INZONE Hub-compatible battery query may return no response. In that state, guessing the case battery from stale feature reports or unrelated values can show incorrect results, so the app shows `?` instead of a guessed value.
+When both earbuds are in the case, the INZONE Hub-compatible battery query may return no response. In that state, guessing the case battery from stale feature reports or unrelated values can show incorrect results, so the app shows `Disconnected` instead of a guessed value.
 
 ### Developer Commands
 

@@ -54,13 +54,14 @@ impl TrayManager {
     pub fn update_status(&mut self, status: &BatteryStatus) -> Result<()> {
         let [status_line, left_line, right_line, case_line] = status.summary_lines();
         let summary = format_summary(status);
+        let has_displayable_values = status.has_displayable_values();
         self.summary_item.set_text(&summary);
         self.status_item.set_text(&status_line);
         self.left_item.set_text(&left_line);
         self.right_item.set_text(&right_line);
         self.case_item.set_text(&case_line);
 
-        let tooltip = if status.connected {
+        let tooltip = if has_displayable_values {
             summary
         } else {
             "INZONE Buds: Disconnected".to_string()
@@ -69,7 +70,7 @@ impl TrayManager {
         self._tray_icon.set_tooltip(Some(tooltip))?;
         self._tray_icon.set_icon(Some(make_icon(
             status.min_percent().unwrap_or(0),
-            status.connected,
+            has_displayable_values,
         )?))?;
 
         Ok(())
@@ -81,7 +82,7 @@ impl TrayManager {
 }
 
 fn format_summary(status: &BatteryStatus) -> String {
-    if !status.connected {
+    if !status.has_displayable_values() {
         return "INZONE Buds: Disconnected".to_string();
     }
 
