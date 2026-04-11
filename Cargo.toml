@@ -1,0 +1,26 @@
+[package]
+name = "inzone-buds-battery-tray"
+version = "1.0.0"
+edition = "2021"
+description = "Windows tray application that shows INZONE Buds battery levels"
+license = "MIT"
+include = [
+    "Cargo.lock",
+    "Cargo.toml",
+    "LICENSE",
+    "README.md",
+    "config/**",
+    "docs/**",
+    "src/**",
+]
+
+[dependencies]
+anyhow = "1"
+hidapi = { version = "2.6", features = ["windows-native"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["fmt", "ansi"] }
+tray-icon = "0.22"
+winrt-notification = "0.5"
+winit = "0.30"

@@ -1,0 +1,19 @@
+/target
+
+# Runtime/generated files
+/logs/
+/dumps/
+/wireshark_log/
+
+# Local reverse-engineering notes kept out of the public release
+/inzone_battery_tray_design.md
+/inzone_battery_tray_review.md
+/inzone-buds-battery-tray_design.md
+/inzone-buds-battery-tray_review.md
+
+# Local environment files
+.env
+.env.*
+*.log
+*.pcap
+*.pcapng

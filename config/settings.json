@@ -1,0 +1,14 @@
+{
+  "low_battery_threshold": 20,
+  "poll_interval_ms": 1000,
+  "vendor_id": 1356,
+  "product_id": 3778,
+  "interface_number": 5,
+  "usage_page": 65283,
+  "usage": 32,
+  "feature_report_ids": [
+    160,
+    161
+  ],
+  "feature_report_size": 256
+}
