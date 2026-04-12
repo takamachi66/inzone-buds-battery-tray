@@ -2,6 +2,12 @@
 
 Windows system tray battery monitor for Sony INZONE Buds.
 
+## Screenshot
+
+![INZONE Buds Battery Tray usage](docs/images/tray-usage.png)
+
+Tray hover tooltip and taskbar icon example on Windows.
+
 ## 日本語
 
 ### 概要
@@ -113,6 +119,18 @@ feature report の時系列解析:
 cargo run -- analyze-feature-series dumps\series\<series_dir>
 ```
 
+配布 zip 作成（対話で version 入力）:
+
+```powershell
+.\scripts\build_release_zip.bat
+```
+
+配布 zip 作成（version 指定）:
+
+```powershell
+.\scripts\build_release_zip.bat v1.0.1
+```
+
 ### 既知の制限
 
 - Sony 公式アプリではありません。
@@ -195,6 +213,18 @@ Compare two captured state directories:
 
 ```powershell
 cargo run -- compare-state-dirs dumps\states\<left> dumps\states\<right>
+```
+
+Create release zip (interactive version prompt):
+
+```powershell
+.\scripts\build_release_zip.bat
+```
+
+Create release zip (explicit version):
+
+```powershell
+.\scripts\build_release_zip.bat v1.0.1
 ```
 
 Generated logs, dumps, and Wireshark captures are intentionally ignored by Git.
