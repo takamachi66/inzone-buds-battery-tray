@@ -11,8 +11,9 @@ mod utils;
 
 use app::InzoneBatteryApp;
 use cli::Command;
-use tracing::error;
+use tracing::{error, info};
 use utils::logger::init_logger;
+use utils::single_instance::try_acquire;
 use winit::event_loop::EventLoop;
 
 fn main() {
@@ -39,6 +40,11 @@ fn run() -> anyhow::Result<()> {
 }
 
 fn run_tray() -> anyhow::Result<()> {
+    let Some(_instance_guard) = try_acquire("inzone-buds-battery-tray.instance")? else {
+        info!("another instance is already running; skipping startup");
+        return Ok(());
+    };
+
     let event_loop = EventLoop::with_user_event().build()?;
     let proxy = event_loop.create_proxy();
     let mut app = InzoneBatteryApp::new(proxy)?;

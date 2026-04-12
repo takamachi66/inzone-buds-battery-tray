@@ -37,6 +37,17 @@ Status: Connected
 Exit
 ```
 
+### トレイアイコンを常時表示する
+
+Windows の仕様上、アプリ側からトレイアイコンを「隠れているインジケーター」ではなく常時表示に強制することは基本的にできません。
+
+常時表示したい場合は、Windows の設定でこのアプリのトレイアイコン表示を有効にしてください。
+
+1. Windows の「設定」を開く
+2. 「個人用設定」>「タスク バー」を開く
+3. 「その他のシステム トレイ アイコン」を開く
+4. `inzone-buds-battery-tray` の表示をオンにする
+
 ### 表示仕様
 
 - `L`: 左イヤホン
@@ -49,7 +60,9 @@ Exit
 - 左だけ出す: `Left: <percent>`, `Right: ?`, `Case: <percent>`
 - 右だけ出す: `Left: ?`, `Right: <percent>`, `Case: <percent>`
 - 両方出す: `Left: <percent>`, `Right: <percent>`, `Case: <percent>`
-- 両方ケース内: ドングルが active query に応答しない場合があるため、推測値ではなく `?` を表示します。
+- 両方ケース内: ドングルが active query に応答しない場合があるため、`Disconnected` と表示されることがあります。
+
+両方のイヤホンをケースに入れた状態では、INZONE Hub 互換の battery query が応答しないことがあります。この場合、古い feature report や無関係な値からケース残量を推測すると誤った値を表示する可能性があるため、このアプリは推測値ではなく `Disconnected` を表示します。
 
 ### 設定
 
@@ -131,6 +144,17 @@ Download the zip from GitHub Releases, extract it, and run:
 
 The app starts in the system tray. Right-click the tray icon to see current battery values.
 
+### Always Show the Tray Icon
+
+Windows does not generally allow an app to force its tray icon to stay visible instead of being placed under hidden icons.
+
+To keep the icon visible, enable it in Windows settings:
+
+1. Open Windows Settings.
+2. Open Personalization > Taskbar.
+3. Open Other system tray icons.
+4. Turn on `inzone-buds-battery-tray`.
+
 ### Display Behavior
 
 - `L`: left earbud
@@ -143,7 +167,9 @@ Confirmed behavior:
 - Left earbud only: `Left: <percent>`, `Right: ?`, `Case: <percent>`
 - Right earbud only: `Left: ?`, `Right: <percent>`, `Case: <percent>`
 - Both earbuds out: `Left: <percent>`, `Right: <percent>`, `Case: <percent>`
-- Both earbuds in case: the dongle may stop responding to the active battery query; the app shows unknown values instead of guessing from stale or unrelated reports.
+- Both earbuds in case: the dongle may stop responding to the active battery query, so the app may show `Disconnected`.
+
+When both earbuds are in the case, the INZONE Hub-compatible battery query may return no response. In that state, guessing the case battery from stale feature reports or unrelated values can show incorrect results, so the app shows `Disconnected` instead of a guessed value.
 
 ### Developer Commands
 

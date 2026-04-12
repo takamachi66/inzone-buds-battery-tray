@@ -6,6 +6,7 @@
 /wireshark_log/
 
 # Local reverse-engineering notes kept out of the public release
+/memo/
 /inzone_battery_tray_design.md
 /inzone_battery_tray_review.md
 /inzone-buds-battery-tray_design.md
