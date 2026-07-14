@@ -1,12 +1,13 @@
 use std::fs::{self, File, OpenOptions};
 use std::io;
-use std::path::Path;
 use std::sync::{Arc, Mutex};
 
 use tracing_subscriber::fmt::writer::MakeWriter;
 
+use crate::utils::paths::base_dir;
+
 pub fn init_logger() -> anyhow::Result<()> {
-    let log_path = Path::new("logs").join("app.log");
+    let log_path = base_dir().join("logs").join("app.log");
     if let Some(parent) = log_path.parent() {
         fs::create_dir_all(parent)?;
     }

@@ -1,7 +1,9 @@
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use serde::{Deserialize, Serialize};
+
+use crate::utils::paths::base_dir;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Settings {
@@ -64,7 +66,7 @@ impl Settings {
     }
 
     pub fn path() -> PathBuf {
-        Path::new("config").join("settings.json")
+        base_dir().join("config").join("settings.json")
     }
 }
 
