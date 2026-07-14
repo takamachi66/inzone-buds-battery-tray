@@ -581,9 +581,9 @@ pub fn run_analyze_feature_series(args: AnalyzeFeatureSeriesArgs) -> Result<()> 
             let left = &pair[0].data;
             let right = &pair[1].data;
             let len = left.len().max(right.len());
-            for offset in 0..len {
+            for (offset, count) in change_counts.iter_mut().enumerate().take(len) {
                 if left.get(offset) != right.get(offset) {
-                    change_counts[offset] += 1;
+                    *count += 1;
                 }
             }
         }
@@ -1079,10 +1079,10 @@ fn probe_feature_reports(
                 println!("    hex={}", to_hex(&feature));
             }
             Ok(_) => {
-                println!("  feature report {:02X}: empty", report_id);
+                println!("  feature report {report_id:02X}: empty");
             }
             Err(error) => {
-                println!("  feature report {:02X}: failed: {error}", report_id);
+                println!("  feature report {report_id:02X}: failed: {error}");
             }
         }
     }

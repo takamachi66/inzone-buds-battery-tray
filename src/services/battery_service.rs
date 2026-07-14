@@ -46,7 +46,8 @@ pub fn spawn_battery_service(
 
         let poll_interval = Duration::from_millis(settings.poll_interval_ms);
         let mut previous_status = BatteryStatus::disconnected();
-        let mut low_battery_notified = false;
+        let mut left_low_notified = false;
+        let mut right_low_notified = false;
         let mut hub_sequence = 1_u8;
 
         loop {
@@ -83,22 +84,18 @@ pub fn spawn_battery_service(
                 previous_status = next_status.clone();
             }
 
-            if next_status.connected
-                && next_status
-                    .min_percent()
-                    .is_some_and(|percent| percent <= settings.low_battery_threshold)
-            {
-                if !low_battery_notified {
-                    if let Some(percent) = next_status.min_percent() {
-                        if let Err(error) = notify_low_battery(percent) {
-                            warn!("failed to show low battery notification: {error}");
-                        }
-                    }
-                    low_battery_notified = true;
-                }
-            } else {
-                low_battery_notified = false;
-            }
+            update_low_battery_notification(
+                next_status.left,
+                "Left",
+                settings.low_battery_threshold,
+                &mut left_low_notified,
+            );
+            update_low_battery_notification(
+                next_status.right,
+                "Right",
+                settings.low_battery_threshold,
+                &mut right_low_notified,
+            );
 
             thread::sleep(poll_interval);
         }
@@ -159,6 +156,32 @@ fn poll_status(
             Ok(parse_report(&report))
         }
         None => Ok(BatteryStatus::disconnected()),
+    }
+}
+
+/// Drive the per-earbud low battery notification with hysteresis.
+///
+/// Each earbud is tracked independently: it notifies once when it drops to or
+/// below the threshold, and only re-arms after it recovers above the threshold.
+/// An unavailable value (`None`, e.g. in case or disconnected) leaves the state
+/// untouched so a brief dropout does not cause a repeat notification.
+fn update_low_battery_notification(
+    level: Option<u8>,
+    side: &str,
+    threshold: u8,
+    notified: &mut bool,
+) {
+    match level {
+        Some(percent) if percent <= threshold => {
+            if !*notified {
+                if let Err(error) = notify_low_battery(side, percent) {
+                    warn!("failed to show low {side} battery notification: {error}");
+                }
+                *notified = true;
+            }
+        }
+        Some(_) => *notified = false,
+        None => {}
     }
 }
 

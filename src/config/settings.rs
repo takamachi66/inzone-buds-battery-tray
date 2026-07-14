@@ -1,7 +1,9 @@
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use serde::{Deserialize, Serialize};
+
+use crate::utils::paths::base_dir;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Settings {
@@ -27,7 +29,7 @@ impl Default for Settings {
     fn default() -> Self {
         Self {
             low_battery_threshold: 20,
-            poll_interval_ms: 1000,
+            poll_interval_ms: 60_000,
             vendor_id: default_vendor_id(),
             product_id: default_product_id(),
             interface_number: default_interface_number(),
@@ -64,7 +66,7 @@ impl Settings {
     }
 
     pub fn path() -> PathBuf {
-        Path::new("config").join("settings.json")
+        base_dir().join("config").join("settings.json")
     }
 }
 

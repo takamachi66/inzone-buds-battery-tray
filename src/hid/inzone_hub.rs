@@ -169,3 +169,69 @@ pub fn flush_hub_input(hid: &mut HidManager) {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Build a battery response report as documented in `docs/protocol.md`:
+    /// `02 12 04 FF 0F 00 96 C3 14 04 10 SS 00 00 LL 00 RR FF CC`.
+    fn battery_response(sequence: u8, left: u8, right: u8, case: u8) -> Vec<u8> {
+        let mut data = vec![0_u8; HUB_REPORT_SIZE];
+        data[0] = HUB_REPORT_ID;
+        data[8] = HUB_RESPONSE_COMMAND;
+        data[9] = HUB_BATTERY_SUBCOMMAND;
+        data[10] = 0x10;
+        data[11] = sequence;
+        data[HUB_BATTERY_OFFSETS[0]] = left;
+        data[HUB_BATTERY_OFFSETS[1]] = right;
+        data[HUB_BATTERY_OFFSETS[2]] = case;
+        data
+    }
+
+    #[test]
+    fn parses_both_earbuds_out() {
+        let report = parse_hub_battery_report(&battery_response(1, 100, 100, 100)).unwrap();
+        assert_eq!(report.left, Some(100));
+        assert_eq!(report.right, Some(100));
+        assert_eq!(report.case, Some(100));
+    }
+
+    #[test]
+    fn decodes_0xff_as_unavailable() {
+        // Left earbud only: the right earbud reports 0xFF (in case / disconnected).
+        let report = parse_hub_battery_report(&battery_response(1, 100, 0xFF, 100)).unwrap();
+        assert_eq!(report.left, Some(100));
+        assert_eq!(report.right, None);
+        assert_eq!(report.case, Some(100));
+    }
+
+    #[test]
+    fn rejects_report_with_wrong_command() {
+        let mut data = battery_response(1, 100, 100, 100);
+        data[8] = 0x00;
+        assert!(parse_hub_battery_report(&data).is_none());
+    }
+
+    #[test]
+    fn rejects_report_that_is_too_short() {
+        assert!(parse_hub_battery_report(&[HUB_REPORT_ID, 0x12, 0x04]).is_none());
+    }
+
+    #[test]
+    fn matches_report_only_for_expected_sequence() {
+        let data = battery_response(7, 50, 60, 70);
+        assert!(parse_hub_battery_report_for_sequence(&data, 7).is_some());
+        assert!(parse_hub_battery_report_for_sequence(&data, 8).is_none());
+    }
+
+    #[test]
+    fn builds_request_matching_protocol_example() {
+        // From docs/protocol.md, sequence 1: 02 0C 01 00 FC 08 96 C3 41 04 01 01 00 A0
+        let request = build_hub_request(HUB_BATTERY_SUBCOMMAND, 1);
+        assert_eq!(
+            &request[..14],
+            &[0x02, 0x0C, 0x01, 0x00, 0xFC, 0x08, 0x96, 0xC3, 0x41, 0x04, 0x01, 0x01, 0x00, 0xA0,]
+        );
+    }
+}

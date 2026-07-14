@@ -44,13 +44,6 @@ impl BatteryStatus {
         }
     }
 
-    pub fn min_percent(&self) -> Option<u8> {
-        [self.left, self.right, self.case]
-            .into_iter()
-            .flatten()
-            .min()
-    }
-
     pub fn has_displayable_values(&self) -> bool {
         self.connected && self.known
     }
