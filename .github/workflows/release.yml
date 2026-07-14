@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo build
+        uses: Swatinem/rust-cache@v2
+
+      - name: Verify tag matches Cargo.toml version
+        shell: pwsh
+        run: |
+          $tag = '${{ github.ref_name }}'
+          $match = Select-String -Path Cargo.toml -Pattern '^version\s*=\s*"([^"]+)"' | Select-Object -First 1
+          $version = $match.Matches[0].Groups[1].Value
+          if ("v$version" -ne $tag) {
+            Write-Error "Tag ($tag) does not match Cargo.toml version (v$version)"
+            exit 1
+          }
+          Write-Host "Version check passed: $tag"
+
+      - name: Build release
+        run: cargo build --release --locked
+
+      - name: Package zip
+        shell: pwsh
+        run: |
+          Compress-Archive -Force -DestinationPath inzone-buds-battery-tray.zip -Path `
+            target/release/inzone-buds-battery-tray.exe, `
+            config, `
+            docs, `
+            README.md, `
+            LICENSE
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: inzone-buds-battery-tray.zip
+          fail_on_unmatched_files: true
