@@ -1,6 +1,6 @@
 {
   "low_battery_threshold": 20,
-  "poll_interval_ms": 1000,
+  "poll_interval_ms": 60000,
   "vendor_id": 1356,
   "product_id": 3778,
   "interface_number": 5,

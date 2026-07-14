@@ -27,7 +27,7 @@ impl Default for Settings {
     fn default() -> Self {
         Self {
             low_battery_threshold: 20,
-            poll_interval_ms: 1000,
+            poll_interval_ms: 60_000,
             vendor_id: default_vendor_id(),
             product_id: default_product_id(),
             interface_number: default_interface_number(),
