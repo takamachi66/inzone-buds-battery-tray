@@ -85,11 +85,11 @@ pub fn spawn_battery_service(
 
             if next_status.connected
                 && next_status
-                    .min_percent()
+                    .earbud_min_percent()
                     .is_some_and(|percent| percent <= settings.low_battery_threshold)
             {
                 if !low_battery_notified {
-                    if let Some(percent) = next_status.min_percent() {
+                    if let Some(percent) = next_status.earbud_min_percent() {
                         if let Err(error) = notify_low_battery(percent) {
                             warn!("failed to show low battery notification: {error}");
                         }

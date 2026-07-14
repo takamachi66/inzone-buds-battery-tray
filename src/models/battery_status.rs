@@ -44,11 +44,13 @@ impl BatteryStatus {
         }
     }
 
-    pub fn min_percent(&self) -> Option<u8> {
-        [self.left, self.right, self.case]
-            .into_iter()
-            .flatten()
-            .min()
+    /// Lowest earbud battery level, ignoring the case.
+    ///
+    /// Low battery notifications are driven by the earbuds you actually wear;
+    /// the case is intentionally excluded because a low case is far less
+    /// urgent than a low earbud.
+    pub fn earbud_min_percent(&self) -> Option<u8> {
+        [self.left, self.right].into_iter().flatten().min()
     }
 
     pub fn has_displayable_values(&self) -> bool {
