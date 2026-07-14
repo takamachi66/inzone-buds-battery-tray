@@ -47,14 +47,14 @@ impl io::Write for SharedFileGuard {
     fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
         self.0
             .lock()
-            .map_err(|_| io::Error::new(io::ErrorKind::Other, "log file lock poisoned"))?
+            .map_err(|_| io::Error::other("log file lock poisoned"))?
             .write(buf)
     }
 
     fn flush(&mut self) -> io::Result<()> {
         self.0
             .lock()
-            .map_err(|_| io::Error::new(io::ErrorKind::Other, "log file lock poisoned"))?
+            .map_err(|_| io::Error::other("log file lock poisoned"))?
             .flush()
     }
 }
