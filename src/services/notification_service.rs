@@ -28,12 +28,12 @@ pub fn register_app_id() -> Result<()> {
 }
 
 #[cfg(windows)]
-pub fn notify_low_battery(percent: u8) -> Result<()> {
+pub fn notify_low_battery(side: &str, percent: u8) -> Result<()> {
     use winrt_notification::{Duration, Sound, Toast};
 
     Toast::new(APP_ID)
         .title(APP_DISPLAY_NAME)
-        .text1(&format!("Battery low: {percent}%"))
+        .text1(&format!("{side} battery low: {percent}%"))
         .sound(Some(Sound::Default))
         .duration(Duration::Short)
         .show()?;
@@ -42,7 +42,7 @@ pub fn notify_low_battery(percent: u8) -> Result<()> {
 }
 
 #[cfg(not(windows))]
-pub fn notify_low_battery(percent: u8) -> Result<()> {
-    tracing::warn!("low battery notification is not supported on this platform: {percent}%");
+pub fn notify_low_battery(side: &str, percent: u8) -> Result<()> {
+    tracing::warn!("low {side} battery notification is not supported on this platform: {percent}%");
     Ok(())
 }
