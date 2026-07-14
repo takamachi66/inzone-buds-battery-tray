@@ -11,7 +11,8 @@ mod utils;
 
 use app::InzoneBatteryApp;
 use cli::Command;
-use tracing::{error, info};
+use services::notification_service::register_app_id;
+use tracing::{error, info, warn};
 use utils::logger::init_logger;
 use utils::single_instance::try_acquire;
 use winit::event_loop::EventLoop;
@@ -44,6 +45,10 @@ fn run_tray() -> anyhow::Result<()> {
         info!("another instance is already running; skipping startup");
         return Ok(());
     };
+
+    if let Err(error) = register_app_id() {
+        warn!("failed to register notification app id: {error}");
+    }
 
     let event_loop = EventLoop::with_user_event().build()?;
     let proxy = event_loop.create_proxy();
